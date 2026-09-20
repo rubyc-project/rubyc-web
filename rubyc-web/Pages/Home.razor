@@ -1,0 +1,164 @@
+﻿@page "/"
+@inject IJSRuntime JS
+
+<PageTitle>RubyC — Familiar language. Native power.</PageTitle>
+<HeadContent>
+    <meta name="description" content="A C#-style language, compiled straight to native code. Explore RubyC: a compiler built from first principles, with native binaries, JIT execution, and extensible targets." />
+    <meta name="theme-color" content="#09090d" />
+</HeadContent>
+
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="site-shell">
+    <header class="site-header">
+        <a class="brand" href="#" aria-label="RubyC home"><img src="images/logo.png" alt="" width="80" height="80" /><span>Ruby<span class="brand-c">C</span></span></a>
+        <nav aria-label="Main navigation" class="@(menuOpen ? "nav-open" : "")">
+            <a href="#philosophy" @onclick="CloseMenu">Why RubyC</a>
+            <a href="#benchmarks" @onclick="CloseMenu">Benchmarks</a>
+            <a href="#playground" @onclick="CloseMenu">The language</a>
+            <a href="#architecture" @onclick="CloseMenu">Under the hood</a>
+        </nav>
+        <a class="header-github" href="https://github.com/rubyc-project" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+        <button class="menu-toggle" @onclick="() => menuOpen = !menuOpen" aria-expanded="@menuOpen.ToString().ToLowerInvariant()" aria-label="Toggle navigation">@(menuOpen ? "✕" : "☰")</button>
+    </header>
+
+    <main id="main">
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-grid" aria-hidden="true"></div>
+            <div class="hero-copy">
+                <a class="release-label" href="#status"><span class="status-dot"></span> A NEW BREED OF COMPILER <span aria-hidden="true">↗</span></a>
+                <h1 id="hero-title">Familiar language.<br /><span>Native power.</span></h1>
+                <p class="hero-description">The expressiveness of C#. The freedom of native.<br class="desktop-break" /> A compiler built from first principles to bring your<br class="desktop-break" /> code closer to the machine.</p>
+                <div class="hero-actions"><a class="button button-primary" href="#playground">Meet RubyC <span aria-hidden="true">↗</span></a><a class="button button-quiet" href="https://github.com/rubyc-project" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.1.39-1.99 1.03-2.69-.1-.26-.45-1.28.1-2.66 0 0 .84-.27 2.75 1.03a9.56 9.56 0 0 1 5 0c1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.66.64.7 1.03 1.59 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85v2.59c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" /></svg>Explore the source</a></div>
+                <div class="hero-meta"><span>BUILT IN RUST</span><i></i><span>DESIGNED FOR NATIVE</span></div>
+            </div>
+            <div class="core-scene" aria-label="An animated ruby crystal surrounded by orbital paths">
+                <div class="core-halo"></div><div class="star-field"></div>
+                <div class="orbit orbit-one"><span></span></div><div class="orbit orbit-two"><span></span></div><div class="orbit orbit-three"><span></span></div>
+                <div class="core-axis axis-x"></div><div class="core-axis axis-y"></div>
+                <div class="ruby-float"><svg class="ruby-crystal" viewBox="0 0 360 380" aria-hidden="true"><defs><linearGradient id="ruby-main" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff6284"/><stop offset=".5" stop-color="#ea174a"/><stop offset="1" stop-color="#610b29"/></linearGradient><linearGradient id="ruby-left" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff8b9d"/><stop offset="1" stop-color="#c50b3c"/></linearGradient><linearGradient id="ruby-right" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f22d59"/><stop offset="1" stop-color="#400b21"/></linearGradient><linearGradient id="ruby-bottom" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff3c68"/><stop offset="1" stop-color="#970d34"/></linearGradient></defs><polygon points="180,20 306,95 327,213 180,358 33,213 54,95" fill="url(#ruby-main)"/><polygon points="180,20 54,95 137,116" fill="#ff8198"/><polygon points="180,20 137,116 248,104" fill="#ff3e67"/><polygon points="180,20 248,104 306,95" fill="#ff6481"/><polygon points="54,95 33,213 137,116" fill="url(#ruby-left)"/><polygon points="137,116 33,213 119,236" fill="#ee2856"/><polygon points="137,116 248,104 119,236" fill="url(#ruby-main)"/><polygon points="248,104 119,236 265,235" fill="#d31445"/><polygon points="248,104 306,95 327,213 265,235" fill="url(#ruby-right)"/><polygon points="33,213 119,236 180,358" fill="#a7113d"/><polygon points="119,236 265,235 180,358" fill="url(#ruby-bottom)"/><polygon points="265,235 327,213 180,358" fill="#650f2c"/><g fill="none" stroke="#ff9aaf" stroke-opacity=".35" stroke-width=".8"><path d="M180 20 137 116 54 95M137 116 33 213 119 236 180 358 265 235 327 213 248 104 180 20M137 116 248 104 265 235 119 236 137 116"/><path d="m54 95 126-75 126 75 21 118-147 145L33 213Z"/></g></svg></div>
+                <div class="core-label label-source"><span class="tiny-cross">+</span> C#-STYLE SOURCE <span class="signal-bars">▂▄▆</span></div>
+                <div class="core-label label-native"><span class="status-dot"></span> NATIVE MACHINE CODE</div>
+                <span class="scene-coordinate coordinate-top">RC / CORE.01</span><span class="scene-coordinate coordinate-bottom">F0 9F 90 95&nbsp;&nbsp;&nbsp;F0 9F 87 A8</span>
+            </div>
+            <div class="hero-bottom"><span><span class="status-dot"></span> INDEPENDENT BY DESIGN</span><a href="#philosophy">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></a></div>
+        </section>
+
+        <section class="capability-strip" aria-label="Compiler capabilities"><span>C#-style syntax</span><span class="strip-plus">+</span><span>Native compilation</span><span class="strip-plus">+</span><span>JIT execution</span><span class="strip-plus">+</span><span>Extensible targets</span></section>
+
+        <section id="philosophy" class="section philosophy">
+            <div class="section-heading"><div><p class="eyebrow"><span>01 /</span> LESS BETWEEN YOU AND THE MACHINE</p><h2>High-level thinking.<br /><span>Low-level freedom.</span></h2></div><p>Write in a language that feels like home.<br />Build something that stands on its own.</p></div>
+            <div class="feature-grid">
+                <article class="feature-card"><div class="feature-icon">{<span> </span>}</div><span class="card-index">01</span><h3>Familiar by nature.</h3><p>Classes, interfaces, namespaces, and expressive C#-style syntax. A growing language surface for ideas you already know how to write.</p><div class="card-foot"><span>C#-STYLE LANGUAGE</span><span>↗</span></div></article>
+                <article class="feature-card"><div class="feature-icon chip-icon">▧</div><span class="card-index">02</span><h3>Native at its core.</h3><p>Go straight from source to machine code. Standalone native executables without a .NET runtime, VM, or garbage collector.</p><div class="card-foot"><span>DIRECT TO THE MACHINE</span><span>↗</span></div></article>
+                <article class="feature-card"><div class="feature-icon">⌘</div><span class="card-index">03</span><h3>Open by architecture.</h3><p>A handwritten frontend. A defined intermediate representation. Pluggable target backends that keep the compiler open to new possibilities.</p><div class="card-foot"><span>BUILT TO BE EXTENDED</span><span>↗</span></div></article>
+            </div>
+        </section>
+
+        <section id="benchmarks" class="section benchmarks" aria-labelledby="benchmark-title">
+            <div class="section-heading"><div><p class="eyebrow"><span>02 /</span> SMALL PROGRAM. REAL NUMBERS.</p><h2 id="benchmark-title">A lighter footprint.<br /><span>Right out of the compiler.</span></h2></div><p>The same hello. Three different compilers.<br />A focused look at the cost of a tiny native program.</p></div>
+            <div class="benchmark-layout">
+                <div class="benchmark-summary"><div class="benchmark-kicker"><span class="status-dot"></span> HELLO-WORLD SNAPSHOT (RESULTS AVERAGE OF 5)</div><div class="benchmark-highlight">@benchmarks[selectedBenchmark].Highlight<span>@benchmarks[selectedBenchmark].Suffix</span></div><h3>@benchmarks[selectedBenchmark].Headline</h3><p>@benchmarks[selectedBenchmark].Description</p><div class="benchmark-machine"><span>TEST ENVIRONMENT</span><strong>Linux · x86-64 dev VM</strong><span>WORKLOAD</span><strong>Print “hello”, no newline</strong></div></div>
+                <div class="benchmark-chart"><div class="benchmark-toolbar"><div class="benchmark-switch" role="group" aria-label="Benchmark metric">@for(var i = 0; i < benchmarks.Length; i++) { var metric = i; <button class="@(selectedBenchmark == i ? "active" : "")" aria-pressed="@((selectedBenchmark == i).ToString().ToLowerInvariant())" @onclick="() => selectedBenchmark = metric">@benchmarks[i].Name</button> }</div><span class="lower-better">↓ LOWER IS BETTER</span></div>
+                    <div class="benchmark-rows" aria-live="polite" aria-atomic="true" @key="selectedBenchmark">
+                        @foreach(var row in benchmarks[selectedBenchmark].Rows) { <div class="benchmark-row @(row.Label == "RubyC" ? "ruby-row" : "")"><div class="benchmark-row-label"><span>@row.Label <small>@row.Detail</small></span><strong>@row.Display</strong></div><div class="benchmark-track" aria-hidden="true">@if(row.Width > 0) { <div class="benchmark-bar" style="width: @(row.Width)%"><span></span></div> } else { <div class="benchmark-missing">NO MEASUREMENT REPORTED</div> }</div></div> }
+                    </div><div class="benchmark-chart-foot"><span>WORKLOAD: HELLO WORLD</span><span>@benchmarks[selectedBenchmark].Unit</span></div>
+                </div>
+            </div>
+            <details class="benchmark-method"><summary><span>Behind the numbers</span><span>Methodology &amp; build commands <b aria-hidden="true">+</b></span></summary><div class="method-content"><div><h3>A documented snapshot, not a universal ranking.</h3><p>Measurements are reproduced from the RubyC project README, not rerun by this website. Runtime is a 200-run average on the x86-64 development VM and includes process spawn. Small timings vary between runs and machines.</p><p>RubyC’s binary is fully static with no dependencies. C and C++ use the default dynamically linked GCC/G++ <code>-O2</code> builds. These are different linking configurations; results describe this hello-world example, not general application performance. C++ compile time was not reported.</p></div><pre><code># Equivalent programs printing hello
+gcc -O2 hello.c -o hello_c
+g++ -O2 hello.cpp -o hello_cpp
+rubyc build hello.rc --target linux_x86_64 -o hello_rc</code></pre></div></details>
+            <p class="benchmark-caption">Source: RubyC README · hello-world comparison · static RubyC vs. dynamically linked C / C++.</p>
+        </section>
+
+        <section id="playground" class="section playground">
+            <div class="playground-copy"><p class="eyebrow"><span>03 /</span> FROM IDEA TO EXECUTABLE</p><h2>Looks familiar.<br /><span>Goes further.</span></h2><p>A little source. A native result.<br />Explore the shape of RubyC, from your first hello to a standalone build.</p><div class="example-tabs" role="tablist" aria-label="Code examples">@for (var i = 0; i < examples.Length; i++) { var index = i; <button id="tab-@i" role="tab" aria-selected="@((selectedExample == i).ToString().ToLowerInvariant())" aria-controls="example-panel" tabindex="@(selectedExample == i ? 0 : -1)" @onkeydown="HandleTabKey" class="@(selectedExample == i ? "active" : "")" @onclick="() => SelectExample(index)"><span>0@(i + 1)</span> @examples[i].Title <span class="tab-arrow">↗</span></button> }</div><p class="example-note">An illustrative preview. Run RubyC locally to compile.</p></div>
+            <div class="editor"><div class="editor-titlebar"><div class="window-dots"><i></i><i></i><i></i></div><span>@examples[selectedExample].File</span><span class="editor-language">RubyC</span></div><div id="example-panel" role="tabpanel" aria-labelledby="tab-@selectedExample" tabindex="0" class="code-panel"><pre>@((MarkupString)examples[selectedExample].Html)</pre></div><div class="terminal"><div class="terminal-heading"><span>TERMINAL</span><button @onclick="CopyCommand" aria-label="Copy build command">@(copied ? "Copied ✓" : "Copy command ⧉")</button></div><div class="terminal-command"><span>❯</span> <code>@examples[selectedExample].Command</code></div><div class="terminal-output" aria-live="polite"><span>↳</span> @examples[selectedExample].Output</div></div><div class="editor-status"><span><span class="status-dot"></span> @examples[selectedExample].Mode</span><span>linux_x86_64</span></div></div>
+        </section>
+
+        <section id="architecture" class="section architecture"><div class="section-heading"><div><p class="eyebrow"><span>04 /</span> ENGINEERED FROM FIRST PRINCIPLES</p><h2>No black box.<br /><span>Just a clear path to native.</span></h2></div><p>From a handwritten parser to an x86-64 backend,<br />every stage has a purpose. Every layer is yours to explore.</p></div><div class="pipeline"><div class="pipeline-node"><span class="node-number">01</span><strong>Source</strong><code>.rc / C#-style</code></div><div class="pipeline-connector"><span></span>→</div><div class="pipeline-node"><span class="node-number">02</span><strong>Frontend</strong><code>Parse · analyse</code></div><div class="pipeline-connector"><span></span>→</div><div class="pipeline-node ir-node"><span class="node-number">03</span><strong>RubyC IR</strong><code>The common language</code></div><div class="pipeline-connector"><span></span>→</div><div class="pipeline-node"><span class="node-number">04</span><strong>Target</strong><code>Lower · generate</code></div><div class="pipeline-connector"><span></span>→</div><div class="pipeline-node"><span class="node-number">05</span><strong>Native</strong><code>Build / JIT</code></div></div><div class="architecture-details"><p><span>↳</span> Built-in language frontends. Pluggable OS targets.</p><span class="architecture-tag">CURRENT BACKEND <strong>Linux x86-64</strong></span></div></section>
+
+        <section id="status" class="section status-section"><div class="status-copy"><p class="eyebrow"><span class="status-dot"></span> ACTIVELY EVOLVING</p><h2>Small beginnings.<br /><span>Native ambitions.</span></h2><p>RubyC is an independent compiler in active development. Native output is the foundation; expanding C# language support and real-world library compatibility is the next frontier.</p><p class="status-note">An early-stage project, with a growing C# subset.<br />Full .NET compatibility is not yet available.</p><a class="text-link" href="https://github.com/rubyc-project" target="_blank" rel="noopener noreferrer">Follow the development <span>↗</span></a></div><div class="status-roadmap"><div><span class="roadmap-marker complete">✓</span><p><span>THE FOUNDATION</span><strong>Source to native. End to end.</strong><small>Frontend, IR, native code generation, and JIT.</small></p></div><div><span class="roadmap-marker current"></span><p><span>IN DEVELOPMENT</span><strong>A wider world of C#.</strong><small>Language coverage and library compatibility.</small></p></div><div><span class="roadmap-marker future">+</span><p><span>THE HORIZON</span><strong>More targets. More possibilities.</strong><small>An extensible architecture to build upon.</small></p></div></div></section>
+
+        <section id="contribute" class="contribute-section" aria-labelledby="contribute-title"><div class="contribute-symbol" aria-hidden="true">&lt;/&gt;</div><div><p class="eyebrow">AN OPEN INVITATION</p><h2 id="contribute-title">Build RubyC with us.</h2><p>Curious about compilers? There’s a place for your ideas.<br />Explore the code, share feedback, and help shape what comes next.</p><div class="contribution-areas"><span>Compiler engineering</span><span>Testing</span><span>Documentation</span></div></div><a class="button button-outline" href="https://github.com/rubyc-project" target="_blank" rel="noopener noreferrer">Get involved on GitHub <span aria-hidden="true">↗</span></a></section>
+
+        <section class="closing">
+            <div class="closing-glow" aria-hidden="true"></div>
+            <div class="closing-waves" aria-hidden="true">
+                <div class="closing-wave wave-back">
+                    <svg class="closing-wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="ruby-wave-back" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#ea174a" stop-opacity="0.1" />
+                                <stop offset="100%" stop-color="#09090d" stop-opacity="0.8" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,40 C160,70 280,15 420,60 C500,80 550,25 600,40 C760,70 880,15 1020,60 C1100,80 1150,25 1200,40 L1200,120 L0,120 Z" fill="url(#ruby-wave-back)" stroke="#f46285" stroke-opacity="0.25" stroke-width="1.2" />
+                    </svg>
+                </div>
+                <div class="closing-wave wave-mid">
+                    <svg class="closing-wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="ruby-wave-mid" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#ea174a" stop-opacity="0.16" />
+                                <stop offset="100%" stop-color="#09090d" stop-opacity="0.85" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,60 C120,85 200,20 320,55 C420,85 520,30 600,60 C720,85 800,20 920,55 C1020,85 1120,30 1200,60 L1200,120 L0,120 Z" fill="url(#ruby-wave-mid)" stroke="#f46285" stroke-opacity="0.45" stroke-width="1.2" />
+                    </svg>
+                </div>
+                <div class="closing-wave wave-front">
+                    <svg class="closing-wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="ruby-wave-front" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#f34569" stop-opacity="0.22" />
+                                <stop offset="100%" stop-color="#09090d" stop-opacity="0.95" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,50 C150,10 250,90 400,45 C480,20 540,75 600,50 C750,10 850,90 1000,45 C1080,20 1140,75 1200,50 L1200,120 L0,120 Z" fill="url(#ruby-wave-front)" stroke="#ff6481" stroke-opacity="0.8" stroke-width="1.5" />
+                    </svg>
+                </div>
+            </div>
+            <div class="closing-content">
+                <div class="closing-copy">
+                    <p class="eyebrow">FAMILIAR ROOTS. NEW POSSIBILITIES.</p>
+                    <h2>Closer to the metal.<br /><span>Further with your ideas.</span></h2>
+                    <a class="button button-primary" href="https://github.com/rubyc-project" target="_blank" rel="noopener noreferrer">Explore RubyC on GitHub <span>↗</span></a>
+                    <p>Built with curiosity. Designed for freedom.</p>
+                </div>
+                <div class="closing-mascot">
+                    <img src="images/logo.png" alt="RubyC mascot" width="280" height="280" />
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer><a class="brand" href="#"><img src="images/logo.png" alt="" width="32" height="32" /><span>Ruby<span class="brand-c">C</span></span></a><p>An independent path from C# to native.</p><a href="https://github.com/rubyc-project" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="#main">Back to top ↑</a></footer>
+</div>
+
+@code {
+    private int selectedBenchmark;
+    private record BenchmarkRow(string Label, string Detail, string Display, int Width);
+    private record Benchmark(string Name, string Highlight, string Suffix, string Headline, string Description, string Unit, BenchmarkRow[] Rows);
+    private readonly Benchmark[] benchmarks = [
+        new("Binary size", "4.69", "kB", "A hello that travels light.", "4,688 bytes. A complete, standalone hello-world executable — about 63% smaller than the documented C build.", "BYTES / DECIMAL kB", [new("RubyC", "static native", "4,688 B", 37), new("C", "gcc -O2 · dynamic", "12,568 B", 100), new("C++", "g++ -O2 · dynamic", "12,576 B", 100)]),
+        new("Runtime", "226", "µs", "From launch to hello.", "Average wall time for the hello-world process, including spawn. Measured over 200 runs on the development VM.", "MICROSECONDS / 200-RUN AVERAGE", [new("RubyC", "static native", "226 µs", 26), new("C", "gcc -O2 · dynamic", "516 µs", 60), new("C++", "g++ -O2 · dynamic", "861 µs", 100)]),
+        new("Compile time", "2", "ms", "A short path from source.", "Reported compile time for this tiny example. Compiler timings depend on workload, machine, and measurement conditions.", "MILLISECONDS / REPORTED SNAPSHOT", [new("RubyC", "native build", "2 ms", 9), new("C", "gcc -O2", "23 ms", 48), new("C++", "g++ -O2", "44 ms", 100)])
+    ];
+    private bool menuOpen;
+    private bool copied;
+    private int selectedExample;
+    private void CloseMenu() => menuOpen = false;
+    private void SelectExample(int index) { selectedExample = index; copied = false; }
+    private async Task HandleTabKey(KeyboardEventArgs e)
+    {
+        int? next = e.Key switch { "ArrowRight" or "ArrowDown" => (selectedExample + 1) % examples.Length, "ArrowLeft" or "ArrowUp" => (selectedExample + examples.Length - 1) % examples.Length, "Home" => 0, "End" => examples.Length - 1, _ => null };
+        if (next is int index) { SelectExample(index); await JS.InvokeVoidAsync("rubyc.focusTab", $"tab-{index}"); }
+    }
+    private async Task CopyCommand() { copied = await JS.InvokeAsync<bool>("rubyc.copy", examples[selectedExample].Command); }
+    private record Example(string Title, string File, string Html, string Command, string Output, string Mode);
+    private readonly Example[] examples = [
+        new("Hello, native.", "hello.rc", "<span class='code-comment'>// A familiar start. A different destination.</span>\n<span class='code-purple'>namespace</span> app;\n\n<span class='code-purple'>class</span> <span class='code-yellow'>hello</span>\n{\n    <span class='code-purple'>int</span> <span class='code-blue'>main</span>()\n    {\n        <span class='code-blue'>printf</span>(<span class='code-green'>\"Hello from RubyC!\"</span>);\n        <span class='code-purple'>return</span> <span class='code-orange'>0</span>;\n    }\n}", "rubyc build hello.rc -o hello", "Standalone native executable → ./hello", "NATIVE BUILD"),
+        new("Think in code.", "calculate.rc", "<span class='code-comment'>// Your logic, one step closer to the machine.</span>\n<span class='code-purple'>namespace</span> app;\n\n<span class='code-purple'>class</span> <span class='code-yellow'>calculate</span>\n{\n    <span class='code-purple'>int</span> <span class='code-blue'>main</span>()\n    {\n        <span class='code-purple'>int</span> answer = <span class='code-orange'>6</span> * <span class='code-orange'>7</span>;\n        <span class='code-blue'>printf</span>(<span class='code-green'>\"{0}\"</span>, answer);\n        <span class='code-purple'>return</span> <span class='code-orange'>0</span>;\n    }\n}", "rubyc run calculate.rc", "Expected output → 42", "JIT EXECUTION"),
+        new("Build your way.", "build.sh", "<span class='code-comment'># One source. Different ways to build.</span>\n\n<span class='code-comment'># A standalone native executable</span>\n<span class='code-blue'>rubyc</span> build hello.rc -o hello\n\n<span class='code-comment'># A shared library</span>\n<span class='code-blue'>rubyc</span> build -O shared -o libhello.so hello.rc\n\n<span class='code-comment'># Choose an installed target explicitly</span>\n<span class='code-blue'>rubyc</span> build hello.rc \\\n    --target <span class='code-green'>linux_x86_64</span> -o hello", "rubyc list --kind target", "Discover your installed target backends", "TARGET DISCOVERY")
+    ];
+}

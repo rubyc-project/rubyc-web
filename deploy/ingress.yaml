@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rubyc-web
+  namespace: rubyc
+spec:
+  entryPoints: [websecure, websecure6]
+  routes:
+    - kind: Rule
+      match: Host(`__DOMAIN__`) || Host(`www.__DOMAIN__`)
+      services:
+        - name: rubyc-web
+          port: 80
+  tls:
+    secretName: rubyc-org-tls

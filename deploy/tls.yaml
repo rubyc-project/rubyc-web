@@ -1,0 +1,61 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: rubyc-godaddy-secret-reader
+  namespace: rubyc
+rules:
+  - apiGroups: [""]
+    resources: [secrets]
+    resourceNames: [godaddy-api-key]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rubyc-godaddy-secret-reader
+  namespace: rubyc
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rubyc-godaddy-secret-reader
+subjects:
+  - kind: ServiceAccount
+    name: godaddy-webhook
+    namespace: cert-manager
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: rubyc-letsencrypt
+  namespace: rubyc
+spec:
+  acme:
+    email: __ACME_EMAIL__
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: rubyc-letsencrypt-account
+    solvers:
+      - dns01:
+          webhook:
+            groupName: acme.gamerconnect.zone
+            solverName: godaddy
+            config:
+              apiKeySecretRef:
+                name: godaddy-api-key
+                key: token
+              production: true
+              ttl: 600
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rubyc-org
+  namespace: rubyc
+spec:
+  secretName: rubyc-org-tls
+  dnsNames: ["__DOMAIN__", "www.__DOMAIN__"]
+  issuerRef:
+    name: rubyc-letsencrypt
+    kind: Issuer
+  privateKey:
+    rotationPolicy: Always

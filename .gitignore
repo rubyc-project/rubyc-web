@@ -1,0 +1,42 @@
+# .NET build and restore output
+**/bin/
+**/obj/
+/packages/
+/artifacts/
+*.nupkg
+*.snupkg
+
+# IDE and user-specific settings
+.idea/
+.vs/
+.vscode/
+_ReSharper*/
+*.sln.iml
+*.iml
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Test and coverage output
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Local configuration and publishing credentials
+.env
+.env.*
+!.env.example
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+**/Properties/PublishProfiles/*.pubxml
+**/Properties/PublishProfiles/*.pubxml.user
+*.pfx
+*.p12
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+Desktop.ini
