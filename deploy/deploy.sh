@@ -11,10 +11,6 @@ SERVER_NODE=${SERVER_NODE:-aumelc1.gamerconnect.zone}
 DOMAIN=${DOMAIN:-rubyc.org}
 ACME_EMAIL=${ACME_EMAIL:-noreply@gamerconnect.zone}
 DNS_SECRET_SOURCE_NAMESPACE=${DNS_SECRET_SOURCE_NAMESPACE:-gamerconnectzone-production}
-PUBLIC_IPV4=${PUBLIC_IPV4:-46.250.247.74}
-PUBLIC_IPV6=${PUBLIC_IPV6:-2407:3641:2350:5998::1}
-IPV6_VERIFY_SSH_HOST=${IPV6_VERIFY_SSH_HOST:-}
-IPV4_VERIFY_SSH_HOST=${IPV4_VERIFY_SSH_HOST:-$IPV6_VERIFY_SSH_HOST}
 TAG=${TAG:-$(git -C "$ROOT" rev-parse --short HEAD)-$(date -u +%Y%m%d%H%M%S)}
 IMAGE="$REGISTRY/rubyc-web:$TAG"
 K=(kubectl --kubeconfig "$KUBECONFIG_PATH")
@@ -22,7 +18,6 @@ for tool in "$CONTAINER_ENGINE" kubectl jq skopeo curl python3; do command -v "$
 [[ "$CONTAINER_ENGINE" == podman || "$CONTAINER_ENGINE" == docker ]] || { echo 'Use podman or docker.' >&2; exit 1; }
 [[ "$REGISTRY_TLS_VERIFY" == true || "$REGISTRY_TLS_VERIFY" == false ]] || exit 1
 [[ "$SERVER_NODE" =~ ^[a-zA-Z0-9.-]+$ && "$DOMAIN" =~ ^[a-zA-Z0-9.-]+$ && "$TAG" =~ ^[a-zA-Z0-9_.-]+$ ]] || { echo 'Invalid node, domain or tag.' >&2; exit 1; }
-[[ "$PUBLIC_IPV4" =~ ^[0-9.]+$ && "$PUBLIC_IPV6" =~ ^[a-fA-F0-9:]+$ && "$IPV4_VERIFY_SSH_HOST" =~ ^[a-zA-Z0-9_.@-]*$ && "$IPV6_VERIFY_SSH_HOST" =~ ^[a-zA-Z0-9_.@-]*$ ]] || { echo 'Invalid verification endpoint.' >&2; exit 1; }
 [[ "$REGISTRY" =~ ^[a-zA-Z0-9.:-]+$ && "$ACME_EMAIL" =~ ^[a-zA-Z0-9._+@-]+$ ]] || { echo 'Invalid registry or email.' >&2; exit 1; }
 # Refuse the development node even if someone overrides SERVER_NODE.
 NODE_JSON=$("${K[@]}" get node "$SERVER_NODE" -o json)
@@ -107,43 +102,8 @@ WORKLOAD_CHANGED=true
 "${K[@]}" -n rubyc get pods -l app.kubernetes.io/name=rubyc-web -o json |
     jq -e --arg node "$SERVER_NODE" --arg digest "$DIGEST" '[.items[] | select(.metadata.deletionTimestamp == null)] | length > 0 and all(.[]; .spec.nodeName == $node and any(.status.conditions[]; .type == "Ready" and .status == "True") and all(.status.containerStatuses[]; .imageID | endswith($digest)))' >/dev/null
 "${K[@]}" apply -f "$WORK/ingress.yaml"
-# Validate listeners with SNI and normal certificate verification. Optional SSH
-# handles clients with no IPv6 egress; it does not claim an external-path test.
-if [[ -n "$IPV4_VERIFY_SSH_HOST" ]]; then
-    echo "Verifying IPv4 via SSH host $IPV4_VERIFY_SSH_HOST."
-    ssh -o BatchMode=yes -o ConnectTimeout=10 "$IPV4_VERIFY_SSH_HOST" "curl --noproxy '*' -4 --fail --silent --show-error --retry 12 --retry-delay 2 --retry-all-errors --connect-timeout 5 --max-time 15 --resolve '$DOMAIN:443:$PUBLIC_IPV4' 'https://$DOMAIN/'" > "$WORK/public.html"
-else
-    curl --noproxy '*' -4 --fail --silent --show-error --retry 12 --retry-delay 2 --retry-all-errors --connect-timeout 5 --max-time 15 --resolve "$DOMAIN:443:$PUBLIC_IPV4" "https://$DOMAIN/" -o "$WORK/public.html"
-fi
-grep -q 'RubyC' "$WORK/public.html"
-if [[ -n "$IPV6_VERIFY_SSH_HOST" ]]; then
-    echo "Verifying IPv6 via SSH host $IPV6_VERIFY_SSH_HOST (external-path testing is separate)."
-    ssh -o BatchMode=yes -o ConnectTimeout=10 "$IPV6_VERIFY_SSH_HOST" "curl --noproxy '*' -6 --fail --silent --show-error --retry 12 --retry-delay 2 --retry-all-errors --connect-timeout 5 --max-time 15 --resolve '$DOMAIN:443:[$PUBLIC_IPV6]' 'https://$DOMAIN/'" > "$WORK/ipv6.html"
-else
-    curl --noproxy '*' -6 --fail --silent --show-error --retry 12 --retry-delay 2 --retry-all-errors --connect-timeout 5 --max-time 15 --resolve "$DOMAIN:443:[$PUBLIC_IPV6]" "https://$DOMAIN/" -o "$WORK/ipv6.html"
-fi
-grep -q 'RubyC' "$WORK/ipv6.html"
-# A DNS/client-network failure here does not undo an otherwise healthy deployment.
+# Deployment is complete after Kubernetes confirms readiness, image, and placement.
+# Public IP, DNS, and SSH connectivity are not deployment gates.
 WORKLOAD_CHANGED=false
 "${K[@]}" -n rubyc get pods -l app.kubernetes.io/name=rubyc-web -o wide
 printf 'Deployed %s\nImage: %s\n' "https://$DOMAIN" "$PINNED_IMAGE"
-DNS_FAILED=false
-if [[ -n "$IPV4_VERIFY_SSH_HOST" ]]; then
-    if ! ssh -o BatchMode=yes -o ConnectTimeout=10 "$IPV4_VERIFY_SSH_HOST" "curl --noproxy '*' -4 --fail --silent --show-error --connect-timeout 10 --max-time 20 'https://$DOMAIN/'" > "$WORK/dns4.html"; then DNS_FAILED=true; fi
-elif ! curl --noproxy '*' -4 --fail --silent --show-error --connect-timeout 10 --max-time 20 "https://$DOMAIN/" -o "$WORK/dns4.html"; then
-    DNS_FAILED=true
-fi
-if [[ "$DNS_FAILED" == true ]] || ! grep -q 'RubyC' "$WORK/dns4.html"; then
-    echo 'Deployment is healthy, but IPv4 public DNS/network verification failed.' >&2
-    DNS_FAILED=true
-fi
-if [[ -n "$IPV6_VERIFY_SSH_HOST" ]]; then
-    if ! ssh -o BatchMode=yes -o ConnectTimeout=10 "$IPV6_VERIFY_SSH_HOST" "curl --noproxy '*' -6 --fail --silent --show-error --connect-timeout 10 --max-time 20 'https://$DOMAIN/'" > "$WORK/dns6.html"; then DNS_FAILED=true; fi
-elif ! curl --noproxy '*' -6 --fail --silent --show-error --connect-timeout 10 --max-time 20 "https://$DOMAIN/" -o "$WORK/dns6.html"; then
-    DNS_FAILED=true
-fi
-if ! grep -q 'RubyC' "$WORK/dns6.html"; then
-    echo 'Deployment is healthy, but IPv6 public DNS/network verification failed.' >&2
-    DNS_FAILED=true
-fi
-[[ "$DNS_FAILED" == false ]]

@@ -20,7 +20,7 @@ The cluster pod network is IPv4-only. Public IPv4 and IPv6 connections terminate
 
 ## Deploy
 
-Run from a machine with access to the cluster, registry, and both public IP families:
+Run from a machine with access to the cluster and image registry:
 
 ```sh
 ./deploy/deploy.sh
@@ -34,8 +34,6 @@ Examples:
 KUBECONFIG_PATH="$HOME/.kube/aucontabo.yaml" ./deploy/deploy.sh
 CONTAINER_ENGINE=docker ./deploy/deploy.sh
 TAG=release-20260920 ./deploy/deploy.sh
-# If the client has no IPv6 egress, verify the server listener via SSH:
-IPV6_VERIFY_SSH_HOST=aucontabo ./deploy/deploy.sh
 ```
 
 Each normal run:
@@ -45,12 +43,12 @@ Each normal run:
 3. Runs a temporary non-root, read-only container and checks health, HTML, and missing-asset handling.
 4. Pushes an immutable tag and deploys the image by its registry digest.
 5. Provisions namespace-scoped DNS-01/TLS resources and waits for a valid certificate.
-6. Rolls out the workload, confirms server placement, and creates the HTTPS route.
-7. Checks TLS and page content against both public listeners, then tests public DNS over IPv4 and IPv6.
+6. Rolls out the workload, checks Kubernetes readiness, server placement, and the running image digest, then creates the HTTPS route.
+7. Reports the deployed image and pod status.
 
-With `IPV6_VERIFY_SSH_HOST`, IPv6 TLS/content/DNS checks run on that SSH host. If it is the web server itself, this confirms its listener but does not prove an external IPv6 path; use an independent IPv6 client for that additional check.
+Public IPv4/IPv6 requests, public DNS checks, and SSH verification are not part of deployment. Client connectivity cannot trigger a rollback of a healthy website.
 
-Temporary containers and local rendering files are cleaned up. A failed workload rollout or direct endpoint check restores the previous Deployment spec; a failed first rollout removes the new website workload/service/route. Certificate setup is retained for renewal or troubleshooting. Public DNS failures after successful direct listener checks return a failure without taking down a healthy deployment.
+Temporary containers and local rendering files are cleaned up. A failed Kubernetes rollout, placement/image check, or ingress apply restores the previous Deployment spec; a failed first rollout removes the new website workload/service/route. Certificate setup is retained for renewal or troubleshooting.
 
 ## DNS and certificate credentials
 
@@ -90,6 +88,6 @@ kubectl --kubeconfig ~/.kube/aucontabo.yaml -n rubyc rollout undo deployment/rub
 kubectl --kubeconfig ~/.kube/aucontabo.yaml -n rubyc rollout status deployment/rubyc-web
 ```
 
-For certificate troubleshooting, inspect Certificate/Order/Challenge status; do not print secret contents. The image registry uses HTTP over the private network, matching the existing cluster setup. `REGISTRY_TLS_VERIFY=false` applies only to this script's registry operations and does not disable website certificate verification.
+For certificate troubleshooting, inspect Certificate/Order/Challenge status; do not print secret contents. The image registry uses HTTP over the private network, matching the existing cluster setup. `REGISTRY_TLS_VERIFY=false` applies only to this script's registry operations; the script makes no public website requests.
 
 The YAML files are templates rendered by `deploy.sh`; do not apply them directly with unresolved `__PLACEHOLDERS__`.
