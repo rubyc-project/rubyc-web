@@ -8,14 +8,15 @@
 </HeadContent>
 
 <a class="skip-link" href="#main">Skip to content</a>
-<div class="site-shell">
+<div class="site-container">
     <div class="construction-banner" role="region" aria-label="Project status notice">
         <div class="construction-content">
             <span class="construction-badge"><span class="status-dot"></span> UNDER CONSTRUCTION</span>
             <span class="construction-text">RubyC is under construction — compiler source code is being uploaded shortly to Git, and only Linux files are being compiled at the moment.</span>
         </div>
     </div>
-    <header class="site-header">
+    <div class="site-shell">
+        <header class="site-header">
         <a class="brand" href="#" aria-label="RubyC home"><img src="images/logo.png" alt="" width="80" height="80" /><span>Ruby<span class="brand-c">C</span></span></a>
         <nav aria-label="Main navigation" class="@(menuOpen ? "nav-open" : "")">
             <a href="#philosophy" @onclick="CloseMenu">Why RubyC</a>
@@ -139,6 +140,7 @@ rubyc build hello.rc --target linux_x86_64 -o hello_rc</code></pre></div></detai
         </section>
     </main>
     <footer><a class="brand" href="#"><img src="images/logo.png" alt="" width="32" height="32" /><span>Ruby<span class="brand-c">C</span></span></a><p>An independent path from C# to native.</p><a href="https://github.com/rubyc-project" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="#main">Back to top ↑</a></footer>
+    </div>
 </div>
 
 @code {
