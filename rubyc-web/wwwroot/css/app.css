@@ -105,3 +105,14 @@ h1:focus{outline:none}
 @keyframes wave-heave-mid{0%{transform:translate3d(0,4px,0) scaleY(0.95)}50%{transform:translate3d(0,-6px,0) scaleY(1.05)}100%{transform:translate3d(0,-2px,0) scaleY(1)}}
 @keyframes wave-heave-back{0%{transform:translate3d(0,-4px,0) scaleY(1.04)}100%{transform:translate3d(0,6px,0) scaleY(0.96)}}
 @media(max-width:540px){.closing-waves{height:90px}}
+
+.construction-banner{position:relative;z-index:100;background:linear-gradient(90deg,rgba(234,23,74,0.15) 0%,rgba(16,16,21,0.95) 50%,rgba(234,23,74,0.15) 100%);border-bottom:1px solid #4a1d2e;box-shadow:0 2px 16px rgba(0,0,0,0.4);padding:10px 6%}
+.construction-content{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center}
+.construction-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(243,69,105,0.18);border:1px solid rgba(243,69,105,0.45);padding:4px 10px;border-radius:999px;font:600 10px var(--mono);color:#ff9aaf;letter-spacing:0.9px;text-transform:uppercase;white-space:nowrap}
+.construction-badge .status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#ff3c68;box-shadow:0 0 8px #ff3c68;animation:dot-fade-flash 2s infinite ease-in-out}
+@keyframes dot-fade-flash{0%,100%{opacity:.25;box-shadow:0 0 0 0 #f3456920;transform:scale(.85)}50%{opacity:1;box-shadow:0 0 10px 2px #ff3c68,0 0 18px 4px #f3456970;transform:scale(1.15)}}
+.construction-text{font-size:12.5px;line-height:1.5;color:#e2d2db}
+.status-notice-card{margin:18px 0 22px;padding:16px 20px;background:linear-gradient(135deg,rgba(48,16,33,0.5) 0%,rgba(16,16,21,0.7) 100%);border:1px solid #5a253c;border-left:3px solid #f34569;border-radius:6px}
+.status-notice-card .notice-badge{display:inline-block;font:600 9px var(--mono);letter-spacing:1px;color:#ff8ca3;margin-bottom:6px}
+.status-notice-card p{margin:0;font-size:12px;line-height:1.6;color:#d6c0cd}
+@media(max-width:768px){.construction-banner{padding:10px 16px}.construction-content{gap:8px;flex-direction:column}.construction-text{font-size:11.5px}}
